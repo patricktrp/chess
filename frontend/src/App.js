@@ -49,6 +49,8 @@ const App = () => {
   }, [createWebSocketConnection]);
 
   const createGame = async (isBotGame, color, time, increment) => {
+    console.log("HERE");
+    console.log(`${process.env.REACT_APP_BACKEND_SERVER}/create${isBotGame ? "-bot" : ""}-game?color=${color}&time=${time}&increment=${increment}`);
     const res = await fetch(`${process.env.REACT_APP_BACKEND_SERVER}/create${isBotGame ? "-bot" : ""}-game?color=${color}&time=${time}&increment=${increment}`);
     const body = await res.json();
     game = body;
@@ -66,6 +68,7 @@ const App = () => {
     let gameState;
     switch (obj["type"]) {
       case "GAME_START":
+        console.log("HERE GAME START RECEIVER");
         setIsPlaying(true);
         gameState = obj["gameState"]
         setGameHistory((oldHistory) => [...oldHistory, gameState["gameFen"]]);

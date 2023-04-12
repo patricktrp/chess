@@ -1,5 +1,6 @@
 package com.patricktreppmann.chess.game;
 
+import com.patricktreppmann.chess.chess.board.Square;
 import com.patricktreppmann.chess.chess.error.IllegalMoveException;
 import com.patricktreppmann.chess.chess.error.PlayerNotFoundException;
 import com.patricktreppmann.chess.chess.events.GameStartEvent;
@@ -8,6 +9,7 @@ import com.patricktreppmann.chess.chess.events.MoveEvent;
 import com.patricktreppmann.chess.chess.game.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -20,7 +22,9 @@ import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
+import java.util.Arrays;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @Controller
 public class GameController {
@@ -36,15 +40,20 @@ public class GameController {
     @CrossOrigin(origins = "*")
     @GetMapping("/create-game")
     @ResponseBody
-    public UUID createTwoPlayerGame(@RequestParam("color") ColorWish color, @RequestParam("time") int time, @RequestParam("increment") int increment) {
-        return gameService.createTwoPlayerGame(color, time, increment);
+    public ResponseEntity<UUID> createTwoPlayerGame(@RequestParam("color") ColorWish color, @RequestParam("time") int time, @RequestParam("increment") int increment) {
+        if (time < 3 || time > 15 || increment < 0 || increment > 15) {
+            return ResponseEntity.badRequest().build();
+        }
+        UUID gameId = gameService.createTwoPlayerGame(color, time, increment);
+        return ResponseEntity.ok(gameId);
     }
 
     @CrossOrigin(origins = "*")
     @GetMapping("/create-bot-game")
     @ResponseBody
-    public UUID createOnePlayerGame(@RequestParam ColorWish color) {
-        return gameService.createOnePlayerGame(color);
+    public ResponseEntity<UUID> createOnePlayerGame(@RequestParam ColorWish color, @RequestParam("time") int time, @RequestParam("increment") int increment) {
+        UUID gameId = gameService.createOnePlayerGame(color, time, increment);
+        return ResponseEntity.ok(gameId);
     }
 
     @MessageMapping("/{gameId}/move")
@@ -59,29 +68,22 @@ public class GameController {
         }
     }
 
-/*    @MessageMapping("/{gameId}/move/ai")
+    @MessageMapping("/{gameId}/move/ai")
     public void moveAI(@DestinationVariable UUID gameId, @Payload Move move, SimpMessageHeaderAccessor accessor) {
         try {
-            String gameState = gameService.move(gameId, accessor.getSessionId(), move);
-            Event event = new Event(EventType.MOVE, gameState);
-            simpMessagingTemplate.convertAndSend("/games/"+gameId+"/ai", event);
-            System.out.println("/games/"+gameId+"/ai");
+            GameState gameState = gameService.move(gameId, accessor.getSessionId(), move);
+            MoveEvent moveEvent = new MoveEvent(gameState);
+            simpMessagingTemplate.convertAndSend("/games/"+gameId+"/ai", moveEvent);
 
-           // ASYNC START OF AI MOVE CALCULATION
-           CompletableFuture.runAsync(() -> {
-                try {
-                    Move move2 = new Move(Square.A8, Square. A5);
-                    String gameState2 = gameService.move(gameId, "ai", move2);
-                    Event event2 = new Event(EventType.MOVE, gameState2);
-                    simpMessagingTemplate.convertAndSend("/games/"+gameId+"/ai", event2);
-                } catch (IllegalMoveException e) {
-                    e.printStackTrace();
-                }
-            });
+            Move aiMove = new Move(Square.A8, Square. A5);
+            GameState gameState2 = gameService.move(gameId, "ai", aiMove);
+            MoveEvent moveEvent2 = new MoveEvent(gameState2);
+            simpMessagingTemplate.convertAndSend("/games/"+gameId+"/ai", moveEvent2);
+
         } catch (IllegalMoveException e) {
             e.printStackTrace();
         }
-    }*/
+    }
 
     @MessageMapping("/{gameId}/chat")
     public void chat(@DestinationVariable UUID gameId, @Payload String message, SimpMessageHeaderAccessor accessor) {
@@ -100,17 +102,22 @@ public class GameController {
     }
 
     @EventListener
-    public void handleSessionSubscribeEvent(SessionSubscribeEvent event) throws PlayerNotFoundException {
+    public void handleSessionSubscribeEvent(SessionSubscribeEvent event) {
         GenericMessage message = (GenericMessage) event.getMessage();
         String simpDestination = (String) message.getHeaders().get("simpDestination");
         String[] splitDestination = simpDestination.split("/");
         String gameId = splitDestination[2];
         String simpSessionId = (String) message.getHeaders().get("simpSessionId");
 
+        String destination = "/games/"+gameId;
+        if (splitDestination[splitDestination.length-1].equals("ai")) {
+            destination += "/ai";
+        }
+
         boolean gameStarts = gameService.playerJoined(gameId, simpSessionId);
         if (gameStarts) {
             GameState gameState = gameService.getGameState(gameId);
-            simpMessagingTemplate.convertAndSend("/games/"+gameId, new GameStartEvent(gameState));
+            simpMessagingTemplate.convertAndSend(destination, new GameStartEvent(gameState));
         }
     }
 

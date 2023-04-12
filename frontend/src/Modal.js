@@ -20,7 +20,6 @@ const Modal = (props) => {
 
     const updateTime = (e) => {
         setTime(e.target.value);
-        console.log(time);
     }
 
     return (

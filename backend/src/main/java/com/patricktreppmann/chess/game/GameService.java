@@ -33,20 +33,21 @@ public class GameService implements IGameService {
     }
 
     @Override
-    public UUID createOnePlayerGame(ColorWish colorWish) {
-/*        UUID gameId = UUID.randomUUID();
-        ChessGame game = new ChessGame(600);
+    public UUID createOnePlayerGame(ColorWish colorWish, int timeInMinutes, int incrementInSeconds) {
+        UUID gameId = UUID.randomUUID();
+        ChessGame game = new ChessGame(timeInMinutes * 60, incrementInSeconds);
         Player AI = new Player("ai");
         boolean wantsToBeWhite = getPlayerColor(colorWish);
 
         if (wantsToBeWhite) {
+            game.setPlayerBlack(AI);
+        } else {
+            game.setPlayerWhite(AI);
             game.setFirstPlayerWhite(false);
         }
-        game.playerJoined(AI);
 
         gameRepository.addGame(gameId, game);
-        return gameId;*/
-        return null;
+        return gameId;
     }
 
     @Override

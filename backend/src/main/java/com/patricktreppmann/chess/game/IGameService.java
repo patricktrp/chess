@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface IGameService {
     UUID createTwoPlayerGame(ColorWish colorWish, int timeInMinutes, int incrementInSeconds);
-    UUID createOnePlayerGame(ColorWish colorWish);
+    UUID createOnePlayerGame(ColorWish colorWish, int timeInMinutes, int incrementInSeconds);
     boolean playerJoined(String gameId, String playerId);
     GameState move(UUID gameUUID, String playerId, Move move) throws IllegalMoveException;
     GameState getGameState(String gameId);
