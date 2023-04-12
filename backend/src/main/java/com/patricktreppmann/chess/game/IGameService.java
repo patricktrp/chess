@@ -12,6 +12,7 @@ public interface IGameService {
     UUID createOnePlayerGame(ColorWish colorWish, int timeInMinutes, int incrementInSeconds);
     boolean playerJoined(String gameId, String playerId);
     GameState move(UUID gameUUID, String playerId, Move move) throws IllegalMoveException;
+    GameState aiMove(UUID gameUUID) throws IllegalMoveException;
     GameState getGameState(String gameId);
 
     String getPlayerColor(UUID gameId, String sessionId) throws PlayerNotFoundException;

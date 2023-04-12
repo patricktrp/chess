@@ -68,7 +68,6 @@ const App = () => {
     let gameState;
     switch (obj["type"]) {
       case "GAME_START":
-        console.log("HERE GAME START RECEIVER");
         setIsPlaying(true);
         gameState = obj["gameState"]
         setGameHistory((oldHistory) => [...oldHistory, gameState["gameFen"]]);

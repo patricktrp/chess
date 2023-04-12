@@ -1,6 +1,8 @@
 package com.patricktreppmann.chess.game;
 
+import com.github.bhlangonijr.chesslib.Board;
 import com.patricktreppmann.chess.chess.ChessGame;
+import com.patricktreppmann.chess.chess.board.Square;
 import com.patricktreppmann.chess.chess.error.IllegalMoveException;
 import com.patricktreppmann.chess.chess.error.PlayerNotFoundException;
 import com.patricktreppmann.chess.chess.game.GameState;
@@ -9,6 +11,7 @@ import com.patricktreppmann.chess.chess.game.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -72,6 +75,32 @@ public class GameService implements IGameService {
         GameState gameState = game.move(playerId ,move);
         System.out.println(game);
         return gameState;
+    }
+
+
+    // TODO: this is only temporary, will create AI later on
+    @Override
+    public GameState aiMove(UUID gameUUID) throws IllegalMoveException {
+        ChessGame game = gameRepository.getGame(gameUUID);
+        String gameFen = game.getFenRepresentation();
+        Board board = new Board();
+        board.loadFromFen(gameFen);
+        List<com.github.bhlangonijr.chesslib.move.Move> moves = board.legalMoves();
+
+        int randomNumber = random.nextInt(moves.size());
+        com.github.bhlangonijr.chesslib.move.Move move = moves.get(randomNumber);
+        com.github.bhlangonijr.chesslib.Square from = move.getFrom();
+        com.github.bhlangonijr.chesslib.Square to = move.getTo();
+
+        String fromVal = from.value();
+        String toVal = to.value();
+
+        Square fromSQ = Square.valueOf(fromVal);
+        Square toSQ = Square.valueOf(toVal);
+
+        Move movee = new Move(fromSQ, toSQ);
+        System.out.println(movee);
+        return move(gameUUID, "ai", movee);
     }
 
     @Override

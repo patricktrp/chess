@@ -75,8 +75,7 @@ public class GameController {
             MoveEvent moveEvent = new MoveEvent(gameState);
             simpMessagingTemplate.convertAndSend("/games/"+gameId+"/ai", moveEvent);
 
-            Move aiMove = new Move(Square.A8, Square. A5);
-            GameState gameState2 = gameService.move(gameId, "ai", aiMove);
+            GameState gameState2 = gameService.aiMove(gameId);
             MoveEvent moveEvent2 = new MoveEvent(gameState2);
             simpMessagingTemplate.convertAndSend("/games/"+gameId+"/ai", moveEvent2);
 
