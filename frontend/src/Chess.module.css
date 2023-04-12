@@ -1,0 +1,11 @@
+@import url(./colors.module.css);
+
+.chess {
+    width: 60vw;
+    display: flex;
+    justify-content: center; 
+    flex-wrap: wrap;
+    background-color: var(--secondary-dark-color);
+    margin: 20px;
+    border-radius: 10px;
+}

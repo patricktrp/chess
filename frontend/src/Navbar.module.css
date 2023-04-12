@@ -1,0 +1,31 @@
+.navbar {
+    width: 100vw;
+    height: 6vh;
+    background-color: rgb(31,31,31);
+    display: flex;
+    justify-content: center; 
+}
+
+.navbaritems {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    width: 95%;
+}
+
+.button {
+    height: 4vh;
+    display: flex;
+    align-items: center;
+    padding: 12px 30px;
+    font-size: 11px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    background-color: white;
+    color: rgb(31,31,31);
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+  }

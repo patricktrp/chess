@@ -1,0 +1,78 @@
+@import url(./colors.module.css);
+
+.chat {
+    width: 20vw;
+    color: #ccc;
+    background-color: var(--secondary-dark-color);
+    margin: 20px;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+@media screen and (max-width: 768px) {
+    .chat {
+      display: none;
+    }
+  }
+
+.chat-header {
+    display: flex;
+    justify-content: center;
+}
+
+.chat-message {
+    display: flex;
+    margin-bottom: 15px;
+    align-items: center;
+}
+
+.chat-message-icon {
+    background-color: rgb(100, 100, 100);
+    min-width: 30px;
+    min-height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100%;
+    margin-right: 20px;
+}
+
+.white {
+    color: white;
+}
+
+.black {
+    color: black;
+}
+
+.chat-input-section {
+    display: flex;
+    justify-content: center;
+}
+
+.chat-input-section-input {
+    background-color: #2b2b2b;
+    color: #f1f1f1;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    margin-right: 20px;
+}  
+
+.scrollable-div::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .scrollable-div::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 4px;
+  }
+  
+  .scrollable-div::-webkit-scrollbar-track {
+    background-color: transparent;
+  }

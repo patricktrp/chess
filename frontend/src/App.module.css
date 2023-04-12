@@ -1,0 +1,11 @@
+.main-layout {
+    width: 100vw;
+    height: 94vh;
+    display: flex;
+}
+
+@media screen and (max-width: 768px) {
+    .main-layout {
+      justify-content: center;
+    }
+  }
