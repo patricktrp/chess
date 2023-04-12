@@ -147,19 +147,6 @@ public class ChessGame {
         return new GameState(whiteTimeLeft, blackTimeLeft, getFenRepresentation(), isWhiteTurn, firstPlayerWhite);
     }
 
-/*    @Override
-    public String toString() {
-        return "ChessGame{" +
-                "board=" + board +
-                ", isWhiteTurn=" + isWhiteTurn +
-                ", playerWhite='" + playerWhite + '\'' +
-                ", playerBlack='" + playerBlack + '\'' +
-                ", status=" + status +
-                ", halfMoveClock=" + halfMoveClock +
-                ", fullMoveNumber=" + fullMoveNumber +
-                '}';
-    }*/
-
     @Override
     public String toString() {
         return "ChessGame{" +

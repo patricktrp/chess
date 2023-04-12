@@ -14,6 +14,4 @@ public class GameRepository {
     public ChessGame getGame(UUID gameId) { return GAMES.get(gameId);}
 
     public void addGame(UUID gameId, ChessGame game) { GAMES.put(gameId, game); }
-
-    public boolean exists(UUID gameId) { return GAMES.containsKey(gameId); }
 }

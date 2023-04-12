@@ -10,12 +10,9 @@ import java.util.UUID;
 public interface IGameService {
     UUID createTwoPlayerGame(ColorWish colorWish, int timeInMinutes, int incrementInSeconds);
     UUID createOnePlayerGame(ColorWish colorWish, int timeInMinutes, int incrementInSeconds);
-    boolean playerJoined(String gameId, String playerId);
+    boolean playerJoined(UUID gameUUID, String playerId);
     GameState move(UUID gameUUID, String playerId, Move move) throws IllegalMoveException;
     GameState aiMove(UUID gameUUID) throws IllegalMoveException;
-    GameState getGameState(String gameId);
-
-    String getPlayerColor(UUID gameId, String sessionId) throws PlayerNotFoundException;
-
-    void playerLeft(UUID gameUUID, String simpSessionId);
+    GameState getGameState(UUID gameUUID);
+    String getPlayerColor(UUID gameUUID, String sessionId) throws PlayerNotFoundException;
 }

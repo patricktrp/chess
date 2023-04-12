@@ -1,12 +1,12 @@
 package com.patricktreppmann.chess.game;
 
-import com.patricktreppmann.chess.chess.board.Square;
 import com.patricktreppmann.chess.chess.error.IllegalMoveException;
 import com.patricktreppmann.chess.chess.error.PlayerNotFoundException;
 import com.patricktreppmann.chess.chess.events.GameStartEvent;
 import com.patricktreppmann.chess.chess.events.MessageEvent;
 import com.patricktreppmann.chess.chess.events.MoveEvent;
-import com.patricktreppmann.chess.chess.game.*;
+import com.patricktreppmann.chess.chess.game.GameState;
+import com.patricktreppmann.chess.chess.game.Move;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
@@ -17,14 +17,13 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.socket.messaging.SessionConnectEvent;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
-import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
-import java.util.Arrays;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 @Controller
 public class GameController {
@@ -96,11 +95,6 @@ public class GameController {
     }
 
     @EventListener
-    @MessageMapping
-    public void handleSessionConnectEvent(SessionConnectEvent event) {
-    }
-
-    @EventListener
     public void handleSessionSubscribeEvent(SessionSubscribeEvent event) {
         GenericMessage message = (GenericMessage) event.getMessage();
         String simpDestination = (String) message.getHeaders().get("simpDestination");
@@ -113,23 +107,21 @@ public class GameController {
             destination += "/ai";
         }
 
-        boolean gameStarts = gameService.playerJoined(gameId, simpSessionId);
+        UUID gameUUID = UUID.fromString(gameId);
+
+        boolean gameStarts = gameService.playerJoined(gameUUID, simpSessionId);
         if (gameStarts) {
-            GameState gameState = gameService.getGameState(gameId);
+            GameState gameState = gameService.getGameState(gameUUID);
             simpMessagingTemplate.convertAndSend(destination, new GameStartEvent(gameState));
         }
     }
 
-    @EventListener
+ /*   @EventListener
     public void handleSessionUnsubscribeEvent(SessionUnsubscribeEvent event) {
-        System.out.println("LEFT");
-        GenericMessage message = (GenericMessage) event.getMessage();
-        String simpDestination = (String) message.getHeaders().get("simpDestination");
 
-        String gameId = simpDestination.split("/")[2];
-        UUID gameUUID = UUID.fromString(gameId);
-
-        String simpSessionId = (String) message.getHeaders().get("simpSessionId");
-        gameService.playerLeft(gameUUID, simpSessionId);
     }
+
+    @EventListener
+    public void handleSessionConnectEvent(SessionConnectEvent event) {
+    }*/
 }

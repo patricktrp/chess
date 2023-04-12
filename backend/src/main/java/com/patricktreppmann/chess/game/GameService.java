@@ -54,8 +54,7 @@ public class GameService implements IGameService {
     }
 
     @Override
-    public boolean playerJoined(String gameId, String playerId) {
-        UUID gameUUID = UUID.fromString(gameId);
+    public boolean playerJoined(UUID gameUUID, String playerId) {
         ChessGame game = gameRepository.getGame(gameUUID);
 
         Player player = new Player(playerId);
@@ -104,30 +103,19 @@ public class GameService implements IGameService {
     }
 
     @Override
-    public GameState getGameState(String gameId) {
-        ChessGame game = gameRepository.getGame(UUID.fromString(gameId));
+    public GameState getGameState(UUID gameUUID) {
+        ChessGame game = gameRepository.getGame(gameUUID);
         return game.getGameState();
     }
 
     @Override
-    public String getPlayerColor(UUID gameId, String sessionId) throws PlayerNotFoundException {
-       ChessGame game = gameRepository.getGame(gameId);
+    public String getPlayerColor(UUID gameUUID, String sessionId) throws PlayerNotFoundException {
+       ChessGame game = gameRepository.getGame(gameUUID);
        if (game.getPlayerWhite().name().equals(sessionId)) {
            return "white";
        } else if (game.getPlayerBlack().name().equals(sessionId)) {
            return "black";
        }
        throw new PlayerNotFoundException();
-    }
-
-    @Override
-    public void playerLeft(UUID gameUUID, String simpSessionId) {
-        ChessGame game = gameRepository.getGame(gameUUID);
-
-        if (game.getPlayerWhite().name().equals(simpSessionId)) {
-            game.setPlayerWhite(null);
-        } else if (game.getPlayerBlack().name().equals(simpSessionId)) {
-            game.setPlayerBlack(null);
-        }
     }
 }
