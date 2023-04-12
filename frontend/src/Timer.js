@@ -8,7 +8,6 @@ const Timer = (props) => {
 
     useEffect(() => {
         if (!props.running) return;
-        console.log("HI");
 
         let interval = setInterval(() => {
             props.setTime(prevSeconds => prevSeconds - 1);
