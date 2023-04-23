@@ -57,6 +57,7 @@ public class GameController {
 
     @MessageMapping("/{gameId}/move")
     public void move(@DestinationVariable UUID gameId, @Payload Move move, SimpMessageHeaderAccessor accessor) {
+        System.out.println(move);
         try {
             GameState gameState = gameService.move(gameId, accessor.getSessionId(), move);
             MoveEvent moveEvent = new MoveEvent(gameState);

@@ -65,6 +65,7 @@ public class ChessGame {
         }
 
         Field src = board.getField(move.from());
+        Field dest = board.getField(move.to());
         if (src.isEmpty()) throw new IllegalMoveException();
 
         Piece piece = src.getPiece();
@@ -73,19 +74,30 @@ public class ChessGame {
             throw new IllegalMoveException();
         }
 
-        src.setPiece(null);
-        Field dest = board.getField(move.to());
-        boolean isCapture = !dest.isEmpty() && dest.getPiece().isWhite() != isWhiteTurn;
-        dest.setPiece(piece);
+        // get possible moves for specific piece
 
-        if (isWhiteTurn) {
-            whiteTimeLeft += incrementInSeconds;
-        } else {
-            blackTimeLeft += incrementInSeconds;
+        // Checkmate and stalemate: You need to check if the move puts the opponent's king in checkmate or stalemate.
+
+        // Illegal move prevention: You need to make sure that the player cannot make an illegal move. For example, a player cannot move a piece that is pinned to the king.
+
+        boolean isCheck = false;
+        if (!isCheck) {
+            movePiece(src, dest, piece);
         }
 
-        isWhiteTurn = !isWhiteTurn;
+
+        if (incrementInSeconds > 0) {
+            incrementTime();
+        }
+
+        switchTurns();
+
         return getGameState();
+    }
+
+    private void movePiece(Field src, Field dest, Piece piece) {
+        src.setPiece(null);
+        dest.setPiece(piece);
     }
 
     public boolean playerJoined(Player player) {
@@ -106,6 +118,18 @@ public class ChessGame {
             startTimer();
         }
         return gameStarts;
+    }
+
+    private void incrementTime() {
+        if (isWhiteTurn) {
+            whiteTimeLeft += incrementInSeconds;
+        } else {
+            blackTimeLeft += incrementInSeconds;
+        }
+    }
+
+    private void switchTurns() {
+        isWhiteTurn = !isWhiteTurn;
     }
 
     public Player getPlayerWhite() {

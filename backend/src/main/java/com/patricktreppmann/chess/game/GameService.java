@@ -97,7 +97,7 @@ public class GameService implements IGameService {
         Square fromSQ = Square.valueOf(fromVal);
         Square toSQ = Square.valueOf(toVal);
 
-        Move movee = new Move(fromSQ, toSQ);
+        Move movee = new Move(fromSQ, toSQ, false);
         System.out.println(movee);
         return move(gameUUID, "ai", movee);
     }
