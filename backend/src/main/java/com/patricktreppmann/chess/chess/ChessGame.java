@@ -9,6 +9,7 @@ import com.patricktreppmann.chess.chess.game.Player;
 import com.patricktreppmann.chess.chess.pieces.Piece;
 import com.patricktreppmann.chess.chess.game.GameState;
 
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -73,6 +74,8 @@ public class ChessGame {
                 || !piece.isWhite() && !playerBlack.name().equals(playerId)) {
             throw new IllegalMoveException();
         }
+
+        List<Move> moveList = piece.getPossibleMoves(board);
 
         // get possible moves for specific piece
 
